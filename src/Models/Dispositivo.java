@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import DataSource.DatabaseDriver;
-
 import Socket.*;
 
 public class Dispositivo {
@@ -16,7 +15,7 @@ public class Dispositivo {
 	public int id;
 	private boolean isActive;
 	private String modello;
-	static Configurazione config;
+	Configurazione config;
 	DatabaseDriver dd;
 	private ServerSocket ss;
 	private int socketport;
@@ -53,6 +52,7 @@ public class Dispositivo {
 
 	public void update() {
 
+		System.out.println("aggiorno la configurazione");
 		try (Socket socket = new Socket("localhost", 4000);
 				PrintWriter out = new PrintWriter(socket.getOutputStream(),
 						true);
@@ -99,12 +99,12 @@ public class Dispositivo {
 		this.modello = modello;
 	}
 
-	public static Configurazione getConfig() {
+	public Configurazione getConfig() {
 		return config;
 	}
 
-	public static void setConfig(Configurazione config) {
-		Dispositivo.config = config;
+	public void setConfig(Configurazione config) {
+		this.config = config;
 	}
 
 	public DatabaseDriver getDd() {
@@ -146,11 +146,11 @@ public class Dispositivo {
 			new Thread(new SocketConfigurazione(Dispositivo.getInstance()
 					.getSs())).start();
 			new Thread(new RilevamentoPosizione()).start();
+			new Thread(new SendMessaggio()).start();
 		}
 		else{
 			System.out.println("errore");
 		}
-
 	}
 	/*
 	 * public void main() { // TODO Auto-generated method stub // update();
